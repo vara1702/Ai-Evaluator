@@ -15,16 +15,12 @@ from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 import sqlite3, uuid, os, re, math, json
 from datetime import datetime
 
-# ── Optional: PDF text extraction ─────────────────────────────────────────────
-try:
-    import pdfplumber
-    PDF_SUPPORT = True
-except ImportError:
-    PDF_SUPPORT = False
+# PDF support disabled (removed to simplify deployment)
+PDF_SUPPORT = False
 
 # ── Optional: OpenAI for LLM feedback ────────────────────────────────────────
 try:
@@ -270,9 +266,9 @@ def score_submission(content: str, plagiarism_pct: float) -> int:
 
 class AssignmentCreate(BaseModel):
     title: str
-    description: Optional[str] = ""
+    description: str = ""
     instructor_id: str = "I001"
-    deadline: Optional[str] = None
+    deadline: str = None
 
 class SubmissionCreate(BaseModel):
     assignment_id: str
@@ -283,7 +279,7 @@ class UserCreate(BaseModel):
     name: str
     email: str
     role: str  # 'student' | 'instructor'
-    password: Optional[str] = None
+    password: str = None
 
 
 # ══════════════════════════════════════════════════════════════════════════════
